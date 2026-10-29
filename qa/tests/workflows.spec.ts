@@ -20,15 +20,13 @@ test("demo import, evidence, investigation, action, scenario, analyst and export
     .click();
   await page.getByLabel("Dataset type").selectOption("clients");
   const sourceId = `BROWSER-${Date.now()}`;
-  await page
-    .getByLabel("Upload CSV or XLSX")
-    .setInputFiles({
-      name: "browser-client.csv",
-      mimeType: "text/csv",
-      buffer: Buffer.from(
-        `Customer ID,Customer Name,Currency\n${sourceId},Browser Fictional Client,USD\n`,
-      ),
-    });
+  await page.getByLabel("Upload CSV or XLSX").setInputFiles({
+    name: "browser-client.csv",
+    mimeType: "text/csv",
+    buffer: Buffer.from(
+      `Customer ID,Customer Name,Currency\n${sourceId},Browser Fictional Client,USD\n`,
+    ),
+  });
   await expect(
     page.getByText("Map source columns", { exact: true }),
   ).toBeVisible();
@@ -173,6 +171,13 @@ test("filters, empty currency, offline recovery, keyboard and responsive layouts
   await page.getByRole("button", { name: "Switch to light theme" }).click();
   for (const width of [320, 768, 1440]) {
     await page.setViewportSize({ width, height: 1000 });
+    // Wait for responsive layout and chart ResizeObservers, not a fixed delay.
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) =>
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+        ),
+    );
     await expect(
       page.getByRole("heading", { name: "Business overview", exact: true }),
     ).toBeVisible();
@@ -185,6 +190,7 @@ test("filters, empty currency, offline recovery, keyboard and responsive layouts
       await page.screenshot({
         path: "../docs/overview-mobile.png",
         fullPage: true,
+        animations: "disabled",
       });
       await page.getByRole("button", { name: "Open navigation" }).click();
       await page

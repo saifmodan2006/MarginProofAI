@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Activity,
@@ -166,6 +166,9 @@ export default function App() {
     () => localStorage.getItem("mp-end") || "2026-10-29",
   );
   const [toast, setToast] = useState("");
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
   const [selected, setSelected] = useState<Finding | null>(null);
   const [source, setSource] = useState<any>(null);
   const [busy, setBusy] = useState(false);
@@ -185,9 +188,11 @@ export default function App() {
   const d = dashboard.data;
   const fmt = (v: unknown) => money(v, currency);
   const alert = (s: string) => {
+    if (toastTimer.current !== undefined) clearTimeout(toastTimer.current);
     setToast(s);
-    setTimeout(() => setToast(""), 5000);
+    toastTimer.current = setTimeout(() => setToast(""), 5000);
   };
+  useEffect(() => () => clearTimeout(toastTimer.current), []);
   const mutate = async (path: string, body?: any, method = "POST") => {
     try {
       setBusy(true);
@@ -298,7 +303,8 @@ export default function App() {
       name: names[i],
       type: "line" as const,
       smooth: true,
-      symbol: "none",
+      symbol: trend.length === 1 ? "circle" : "none",
+      symbolSize: 7,
       lineStyle: { width: 3 },
       areaStyle: i === 0 ? { color: "rgba(71,120,238,.07)" } : undefined,
       data: trend.map((t: any) => (t[key] === null ? null : Number(t[key]))),

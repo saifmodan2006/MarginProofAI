@@ -2,6 +2,8 @@
 
 This is evidence for the local MVP, not a production-readiness assessment.
 
+The complete workflow also passed on a fresh Ubuntu GitHub Actions runner: [verified run](https://github.com/saifmodan2006/MarginProofAI/actions/runs/40852566409). The workflow installs locked dependencies, tests the API and financial engine, builds the frontend, audits npm packages, starts both services, and runs Chromium workflows/accessibility checks.
+
 | Check | Result |
 | --- | --- |
 | Python analytics and isolated API integration suite | 57 passed |
