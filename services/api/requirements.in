@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+alembic
+python-multipart
+openpyxl
+defusedxml
+reportlab
+httpx
+pytest
+ruff
+psycopg[binary]

@@ -1,0 +1,2 @@
+source_id,project_id,vendor_id,date,amount,category,reference,currency,status
+IMPORT-EXPENSE-001,PR-001,V-1,2026-10-25,175.25,Infrastructure,IMPORT-RECEIPT-001,USD,valid

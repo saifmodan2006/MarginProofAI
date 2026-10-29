@@ -1,0 +1,12 @@
+{
+  "name": "marginproof-browser-qa",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "latest",
+    "@axe-core/playwright": "latest"
+  }
+}

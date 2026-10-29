@@ -1,0 +1,43 @@
+{
+  "period": {
+    "start": "2025-11-01",
+    "end": "2026-10-29"
+  },
+  "currency": "USD",
+  "metrics": {
+    "invoiced_revenue": "2535500.00",
+    "recognized_revenue": "2535500.00",
+    "expenses": "266574.00",
+    "delivery_labor": "994739.00",
+    "cost_of_services": "1261313.00",
+    "gross_profit": "1274187.00",
+    "gross_margin": "50.25",
+    "outstanding": "97850.00",
+    "overdue": "68250.00",
+    "unbilled": "2000.00",
+    "collected_cash": "2437400.00",
+    "unresolved_findings": 17,
+    "completed_investigations": 0,
+    "recovered_revenue": null
+  },
+  "counts": {
+    "clients": 12,
+    "projects": 24,
+    "contracts": 24,
+    "invoices": 288,
+    "payments": 282,
+    "payment_allocations": 282,
+    "timesheets": 288,
+    "invoice_items": 288,
+    "expenses": 865,
+    "vendors": 4,
+    "credit_notes": 1
+  },
+  "finding_categories": {
+    "duplicate_expense": 1,
+    "expense_anomaly": 1,
+    "margin_decline": 7,
+    "overdue": 7,
+    "unbilled": 1
+  }
+}

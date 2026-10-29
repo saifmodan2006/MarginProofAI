@@ -1,0 +1,16 @@
+.venv/
+node_modules/
+dist/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.pyc
+*.db
+*.db-shm
+*.db-wal
+.env
+data/
+test-results/
+playwright-report/
+*.egg-info/
+*.tsbuildinfo

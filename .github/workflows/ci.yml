@@ -1,0 +1,71 @@
+name: Verify local analytical MVP
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: services/api/requirements.txt
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: "24"
+          cache: npm
+      - name: Install locked dependencies
+        run: |
+          python -m pip install -r services/api/requirements.txt
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Verify deterministic calculations and API
+        run: |
+          python -m ruff check services/api
+          python -m pytest services/api/tests -q
+      - name: Verify frontend
+        run: |
+          npm run build
+          npm run test:web
+          npm audit --audit-level=moderate
+      - name: Start local demo
+        run: |
+          python -m alembic -c services/api/alembic.ini upgrade head
+          python -m uvicorn app.main:app --app-dir services/api --host 127.0.0.1 --port 8000 > /tmp/marginproof-api.log 2>&1 &
+          npm --prefix apps/web run dev -- --port 5173 --strictPort > /tmp/marginproof-web.log 2>&1 &
+          python - <<'PY'
+          import time, urllib.request
+          deadline = time.monotonic() + 45
+          for url in ['http://127.0.0.1:8000/api/v1/health', 'http://127.0.0.1:5173']:
+              while True:
+                  try:
+                      urllib.request.urlopen(url, timeout=3)
+                      break
+                  except OSError:
+                      if time.monotonic() > deadline:
+                          raise
+                      time.sleep(0.5)
+          PY
+      - name: Verify real browser workflows and automated accessibility
+        run: npm run test:browser
+      - uses: actions/upload-artifact@v7.0.2
+        if: failure()
+        with:
+          name: browser-debug-artifacts
+          path: |
+            qa/playwright-report
+            qa/test-results
+            /tmp/marginproof-api.log
+            /tmp/marginproof-web.log
+          retention-days: 7
